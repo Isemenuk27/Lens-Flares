@@ -7,7 +7,7 @@ local CVARSpaceing = CreateClientConVar("snfl_spaceing", "1.2", true, false)
 local CVARArea = CreateClientConVar("snfl_area", "0.2", true, false)
 --Bools
 local CVARRotation = CreateClientConVar("snfl_rotate", "1", true, false)
-local CVARFastMode = CreateClientConVar("snfl_fast", "1", true, false)
+local CVARFastMode = CreateClientConVar("snfl_fast", "0", true, false)
 local CVARObstruct = CreateClientConVar("snfl_obstruction", "1", true, false)
 --Strings
 local CVARSpriteList = CreateClientConVar("snfl_sprites", "sprites/glow04_noz sprites/blueflare1_noz_gmod sprites/orangecore1_gmod sprites/light_ignorez", true, false)
@@ -373,14 +373,21 @@ end)
 --[[-------------------------------------------------------------------------
 								Enable/Disable
 ---------------------------------------------------------------------------]]
-cvars.AddChangeCallback("snfl_enable", function(cname, old, new)
-    ENABLED = tobool(new)
+
+local function SwitchLF( bl )
+    ENABLED = bl
     if ENABLED then
     	EnableLensFlares()
     	return
     end
     DisableLensFlares()
+end
+
+cvars.AddChangeCallback("snfl_enable", function(cname, old, new)
+	SwitchLF( tobool(new) )
 end)
+
+SwitchLF( ENABLED )
 
 function SFAddControls()
 	spawnmenu.AddToolMenuOption( "Options", "postprocessing", "SunFlares", "#Sun Flares", "", "", function( panel )
